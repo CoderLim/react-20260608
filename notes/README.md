@@ -8,6 +8,7 @@
 |------|------|
 | [01-main-flow.md](./01-main-flow.md) | React 主流程：初次渲染、更新、Fiber 工作循环、Commit 阶段 |
 | [02-hooks.md](./02-hooks.md) | Hooks 实现原理：Dispatcher、Hook 链表、useState、useEffect 等 |
+| [03-diff.md](./03-diff.md) | Diff 算法：单节点、多节点两轮遍历、lastPlacedIndex 移动判断 |
 
 ## 关键包
 
