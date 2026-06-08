@@ -10,6 +10,7 @@
 | [02-hooks.md](./02-hooks.md) | Hooks 实现原理：Dispatcher、Hook 链表、useState、useEffect 等 |
 | [03-diff.md](./03-diff.md) | Diff 算法：单节点、多节点两轮遍历、lastPlacedIndex 移动判断 |
 | [04-render-commit.md](./04-render-commit.md) | Render Phase 与 Commit Phase：双缓冲、beginWork/completeWork、effects 链表、useEffect 执行时序 |
+| [05-scheduler.md](./05-scheduler.md) | Scheduler：双队列、小顶堆、时间片、MessageChannel、延迟任务 |
 
 ## 关键包
 
