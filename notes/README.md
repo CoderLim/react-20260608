@@ -14,6 +14,8 @@
 | [06-scheduler.md](./06-scheduler.md) | Scheduler：双队列、小顶堆、时间片、MessageChannel、延迟任务 |
 | [07-concurrent.md](./07-concurrent.md) | 异步可中断更新：时间片机制、高优先级插队、双缓冲保证正确性 |
 | [08-events.md](./08-events.md) | 事件系统：委托到 root、合成事件、优先级映射、原生与 React 事件顺序 |
+| [09-context.md](./09-context.md) | Context：_currentValue 栈管理、依赖链表、变化传播、为何绕过 memo |
+| [10-lane.md](./10-lane.md) | Lane 模型：位掩码、各 Lane 含义、纠缠、饥饿处理、与 Scheduler 互转 |
 
 ## 关键包
 
