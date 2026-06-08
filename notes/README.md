@@ -9,9 +9,10 @@
 | [01-main-flow.md](./01-main-flow.md) | React 主流程：初次渲染、更新、Fiber 工作循环、Commit 阶段 |
 | [02-hooks.md](./02-hooks.md) | Hooks 实现原理：Dispatcher、Hook 链表、useState、useEffect 等 |
 | [03-diff.md](./03-diff.md) | Diff 算法：单节点、多节点两轮遍历、lastPlacedIndex 移动判断 |
-| [04-render-commit.md](./04-render-commit.md) | Render Phase 与 Commit Phase：双缓冲、beginWork/completeWork、effects 链表、useEffect 执行时序 |
-| [05-scheduler.md](./05-scheduler.md) | Scheduler：双队列、小顶堆、时间片、MessageChannel、延迟任务 |
-| [06-concurrent.md](./06-concurrent.md) | 异步可中断更新：时间片机制、高优先级插队、双缓冲保证正确性 |
+| [04-render-phase.md](./04-render-phase.md) | Render Phase：双缓冲、beginWork/completeWork、bailout 优化 |
+| [05-commit-phase.md](./05-commit-phase.md) | Commit Phase：三阶段、current 切换时机、useEffect 时序 |
+| [06-scheduler.md](./06-scheduler.md) | Scheduler：双队列、小顶堆、时间片、MessageChannel、延迟任务 |
+| [07-concurrent.md](./07-concurrent.md) | 异步可中断更新：时间片机制、高优先级插队、双缓冲保证正确性 |
 
 ## 关键包
 
