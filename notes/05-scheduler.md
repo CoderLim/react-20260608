@@ -143,6 +143,40 @@ sortIndex 从 `startTime` 换成 `expirationTime`，因为两个队列的排序�
 
 ---
 
+## Scheduler 的 task 在 React 里是什么
+
+Scheduler 是通用调度器，不感知 React 内部细节。React 调度时传入的 callback 是：
+
+```javascript
+scheduleCallback(priority, performConcurrentWorkOnRoot.bind(null, root))
+```
+
+所以 **Scheduler 里的一个 task = 对某个 root 跑一轮工作循环**。不是一个组件，不是一个 Fiber 节点。
+
+**多次 setState 只对应一个 task**
+
+```javascript
+setState(1)
+setState(2)
+setState(3)
+```
+
+每次 setState 都调用 `ensureRootIsScheduled`，但调度器发现已有针对该 root 的 task，不重复创建，三次更新合并到同一个 task 处理。
+
+**一个 task 可能执行多次**
+
+时间片用完，workLoop 退出，`performConcurrentWorkOnRoot` 返回自身作为 continuation：
+
+```javascript
+if (root.callbackNode === originalCallbackNode) {
+  return performConcurrentWorkOnRoot.bind(null, root)  // 还没跑完，下次继续
+}
+```
+
+Scheduler 看到返回值是函数，保留该 task，下个时间片继续执行。一次逻辑渲染可能跨多个时间片、对应同一个 task 被执行多次。
+
+---
+
 ## 完整时序
 
 ```
