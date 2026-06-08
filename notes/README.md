@@ -1,0 +1,20 @@
+# React 源码笔记
+
+梳理 React 核心流程与实现原理。
+
+## 目录
+
+| 文件 | 内容 |
+|------|------|
+| [01-main-flow.md](./01-main-flow.md) | React 主流程：初次渲染、更新、Fiber 工作循环、Commit 阶段 |
+| [02-hooks.md](./02-hooks.md) | Hooks 实现原理：Dispatcher、Hook 链表、useState、useEffect 等 |
+
+## 关键包
+
+| 包 | 职责 |
+|----|------|
+| `packages/react/` | 核心 API：`useState`、`memo` 等 |
+| `packages/react-dom/` | DOM 渲染器：`createRoot` |
+| `packages/react-reconciler/` | Fiber 协调引擎（核心） |
+| `packages/scheduler/` | 调度器：优先级、时间分片 |
+| `packages/react-dom-bindings/` | 事件系统 |
