@@ -16,6 +16,7 @@
 | [08-events.md](./08-events.md) | 事件系统：委托到 root、合成事件、优先级映射、原生与 React 事件顺序 |
 | [09-context.md](./09-context.md) | Context：_currentValue 栈管理、依赖链表、变化传播、为何绕过 memo |
 | [10-lane.md](./10-lane.md) | Lane 模型：位掩码、各 Lane 含义、纠缠、饥饿处理、与 Scheduler 互转 |
+| [11-suspense.md](./11-suspense.md) | Suspense：throw Promise 机制、fallback 切换、ping/retry 恢复、并发模式差异 |
 
 ## 关键包
 
