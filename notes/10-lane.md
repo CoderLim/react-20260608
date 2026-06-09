@@ -92,25 +92,79 @@ function getNextLanes(root, wipLanes) {
 
 **含义**：纠缠的 lanes 必须一起渲染，不能只提交其中一部分。
 
-**典型场景**：对同一状态队列的多个 transition 更新。
+### 为什么需要多个 TransitionLane
+
+如果只有一个 TransitionLane，所有 transition 共享它，就会被视为同一批，互相阻塞。
 
 ```javascript
-// 快速连续触发 startTransition
-startTransition(() => setQuery('a'))   // → TransitionLane1
-startTransition(() => setQuery('ab'))  // → TransitionLane2，与 Lane1 纠缠
-startTransition(() => setQuery('abc')) // → TransitionLane3，与 Lane1/2 纠缠
+function SearchPage() {
+  const [query, setQuery] = useState('')   // 搜索词，渲染慢
+  const [theme, setTheme] = useState('')   // 主题，渲染快
+}
+
+startTransition(() => setQuery('hello'))  // 如果只有一个 lane
+startTransition(() => setTheme('dark'))   // 必须等搜索渲染完才能提交主题
 ```
 
-三个 lane 互相纠缠后，渲染任何一个时，其他两个也会被加入本次渲染。这样用户永远只会看到最新的输入结果，不会看到中间状态。
+多个 TransitionLane 让**不同 state 的 transition 能并行推进**：
+
+```
+setQuery('hello') → TransitionLane1   独立调度，慢慢跑
+setTheme('dark')  → TransitionLane2   独立调度，快速提交
+```
+
+### 纠缠只发生在同一个队列
+
+```javascript
+// 同一 state 快速输入 → 同一队列 → 互相纠缠，必须一起提交
+startTransition(() => setQuery('a'))    // TransitionLane1 ┐
+startTransition(() => setQuery('ab'))   // TransitionLane2 ├ 纠缠
+startTransition(() => setQuery('abc'))  // TransitionLane3 ┘
+
+// 不同 state → 不同队列 → 不纠缠，独立运行
+startTransition(() => setTheme('dark')) // TransitionLane4，不受上面影响
+```
+
+纠缠防止同一 state 的旧结果覆盖新结果（用户看到搜索词倒退）。
 
 ```javascript
 function entangleLanes(root, a, b) {
   root.entangledLanes |= a | b
-  // a 的纠缠集包含 b，b 的纠缠集包含 a
-  entanglements[indexOfA] |= b
-  entanglements[indexOfB] |= a
+  entanglements[indexOfA] |= b   // a 的纠缠集包含 b
+  entanglements[indexOfB] |= a   // b 的纠缠集包含 a
 }
 ```
+
+### 16 个 TransitionLane 用完了怎么办
+
+TransitionLane 是循环分配的，用完 16 个后回到 Lane1：
+
+```javascript
+let nextTransitionLane = TransitionLane1
+
+function claimNextTransitionLane() {
+  const lane = nextTransitionLane
+  nextTransitionLane <<= 1
+  if ((nextTransitionLane & TransitionLanes) === 0) {
+    nextTransitionLane = TransitionLane1  // 循环回到第一个
+  }
+  return lane
+}
+```
+
+复用已有 Lane 意味着新 transition 和原 Lane 上未完成的任务**退化为同一批**，两者被强制一起渲染。这是一种降级策略——略微损失独立性，但不影响正确性。
+
+实践中触发这种情况需要同时有 16 个以上未完成的 transition，极难出现。
+
+### 其他触发纠缠的场景
+
+纠缠不只发生在 transition 上：
+
+| 场景 | 纠缠的 lanes | 原因 |
+|---|---|---|
+| 同一 state 的多次 transition | TransitionLane 之间 | 防止旧状态覆盖新状态 |
+| InputContinuousLane + DefaultLane 同时存在 | 自动合并到一起渲染 | 保证 UI 一致性（拖动 + 数据更新同帧提交） |
+| 同一 Suspense 边界多个 Promise resolve | RetryLane 之间 | 数据全部就绪再一起切换，避免部分显示 |
 
 ---
 
